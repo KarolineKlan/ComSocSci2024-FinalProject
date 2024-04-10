@@ -9,9 +9,6 @@ categories = ["frugt-og-groent/", "koed-og-fisk/", "mejeri-og-koel/"]
 
 SCRAPE_LINK = LINK + categories[1]
 
-# Path to your Chrome WebDriver executable
-webdriver_path = '/Users/kristofferkjaer/Desktop/edgedriver_mac64_m1/msedgedriver'
-
 # URL of the webpage
 url = SCRAPE_LINK
 
@@ -36,7 +33,13 @@ driver.quit()
 soup = BeautifulSoup(page_source, 'html.parser')
 
 # Find the div element with specific attributes
-div_element = soup.find('div', {'data-v-da5161c2': True, 'data-v-e0535ac4': True})
+div_element = soup.find_all('div', {'data-v-da5161c2': True, 'data-v-e0535ac4': True})
+# Find all elements with product-card-container class
+product_card_containers = soup.find_all('div', {'class' : 'product-card-container'})
+
+# You can now process both sets of elements separately
+print(div_element)
+print(product_card_containers)
 
 # Print the div element
 print(div_element)
