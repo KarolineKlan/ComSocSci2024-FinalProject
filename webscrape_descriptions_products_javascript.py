@@ -48,7 +48,7 @@ def get_product_description(link):
 
 
 if __name__ == "__main__":
-    products = pd.read_csv('data\df_Salling_Products.csv', sep=";")
+    products = pd.read_csv('data/df_Salling_Products.csv', sep=";")
     product_links = products["link"]
     product_id = products["product_id"]
 
