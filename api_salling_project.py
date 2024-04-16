@@ -34,7 +34,7 @@ url = "https://api.sallinggroup.com"
 version = "v1-beta"
 recourses = "product-suggestions/frequently-bought-together"
 PARAMETERS = {
-    "productId" : "93019"
+    "productId" : "18381"
 }
 
 

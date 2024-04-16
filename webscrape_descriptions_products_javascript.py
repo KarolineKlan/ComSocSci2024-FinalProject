@@ -7,7 +7,7 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 
 BASE_LINK = "https://www.bilkatogo.dk"
-df1 = pd.DataFrame(columns=["descriptions"])
+df1 = pd.DataFrame(columns=["p_id", "descriptions"])
 
 
 
@@ -26,7 +26,7 @@ def get_product_description(link):
     driver.get(url)
     
     # Wait for a few seconds to ensure JavaScript execution
-    time.sleep(0.3)
+    time.sleep(2)
 
     # Get the page source after JavaScript execution
     page_source = driver.page_source
@@ -36,9 +36,10 @@ def get_product_description(link):
 
     # Parse the HTML content
     soup = BeautifulSoup(page_source, 'html.parser')
-
-    description = soup.find('section', {'id' : 'content-description', 'class': 'content'}).text
-
+    try:
+        description = soup.find('section', {'id' : 'content-description', 'class': 'content'}).text
+    except AttributeError:
+        description = "No description available"
     product_descriptions.append(description)
         
     return product_descriptions
@@ -47,12 +48,17 @@ def get_product_description(link):
 
 
 if __name__ == "__main__":
+    products = pd.read_csv('data\df_Salling_Products.csv', sep=";")
+    product_links = products["link"]
+    product_id = products["product_id"]
 
-    product_links = pd.read_csv('data\df_Salling_Products.csv', sep=";")["link"]
+    
+    for i in tqdm(range(len(pd.read_csv("data/df_Salling_Products_Descriptions.csv", sep=";")), len(product_links), 14)):
 
-    results = Parallel(n_jobs=8)(delayed(get_product_description)(link) for link in tqdm(product_links))
-    df1["descriptions"] = sum(results, [])
+        results = Parallel(n_jobs=-2)(delayed(get_product_description)(link) for link in product_links[i:i+14])
 
-    df1.to_csv('df_Salling_Products_Descriptions.csv', sep=';')
+        df1['p_id'] = list(product_id[i:i+14])
+        df1["descriptions"] = sum(results, [])
+        df1.to_csv('data/df_Salling_Products_Descriptions.csv', sep=';', mode='a', index=False, header=False)
 
     print(1)
