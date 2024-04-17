@@ -54,8 +54,7 @@ def get_neighbours(product_id):
 
 if __name__ == "__main__":
     
-    
-    get_neighbours(126683)
+    get_neighbours(49856)
     
     time_step = 4
     
